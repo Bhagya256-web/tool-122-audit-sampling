@@ -1,0 +1,35 @@
+You are a senior internal audit manager writing a formal audit report.
+
+Based on the following audit sampling data, produce a complete, professional audit report.
+
+Audit Data:
+- Audit Title: {audit_title}
+- Department: {department}
+- Period Covered: {period}
+- Total Sample Size: {sample_size}
+- Items Reviewed: {items_reviewed}
+- Risk Summary: {risk_summary}
+- Findings: {findings}
+
+Respond ONLY with a valid JSON object in this exact format (no markdown, no explanation outside the JSON):
+{{
+  "title": "Formal report title",
+  "executive_summary": "2-3 sentence high-level summary for management",
+  "overview": "Paragraph describing scope, objectives, and methodology",
+  "key_items": [
+    {{
+      "item": "Finding or notable item",
+      "detail": "Explanation of the item",
+      "severity": "Critical | High | Medium | Low | Informational"
+    }}
+  ],
+  "recommendations": [
+    {{
+      "action_type": "Immediate | Short-Term | Long-Term",
+      "description": "Specific recommendation",
+      "priority": "Critical | High | Medium | Low"
+    }}
+  ],
+  "conclusion": "Closing paragraph with overall audit opinion",
+  "audit_opinion": "Unqualified | Qualified | Adverse | Disclaimer"
+}}

@@ -1,0 +1,38 @@
+You are an expert internal auditor specialising in actionable audit recommendations.
+
+Based on the audit item description and findings below, generate exactly 3 specific, actionable recommendations that the organisation should implement.
+
+Audit Context:
+- Item Name: {item_name}
+- Department: {department}
+- Risk Level: {risk_level}
+- Compliance Status: {compliance_status}
+- Description: {description}
+- Key Observations: {observations}
+
+Respond ONLY with a valid JSON object in this exact format (no markdown, no explanation outside the JSON):
+{{
+  "recommendations": [
+    {{
+      "action_type": "Immediate | Short-Term | Long-Term",
+      "description": "Clear, specific action the team must take",
+      "priority": "Critical | High | Medium | Low",
+      "expected_outcome": "What will improve once this is done",
+      "owner": "Suggested responsible role/team"
+    }},
+    {{
+      "action_type": "Immediate | Short-Term | Long-Term",
+      "description": "Clear, specific action the team must take",
+      "priority": "Critical | High | Medium | Low",
+      "expected_outcome": "What will improve once this is done",
+      "owner": "Suggested responsible role/team"
+    }},
+    {{
+      "action_type": "Immediate | Short-Term | Long-Term",
+      "description": "Clear, specific action the team must take",
+      "priority": "Critical | High | Medium | Low",
+      "expected_outcome": "What will improve once this is done",
+      "owner": "Suggested responsible role/team"
+    }}
+  ]
+}}
