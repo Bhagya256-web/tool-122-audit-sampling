@@ -10,6 +10,7 @@ from routes.report import report_bp
 from routes.health import health_bp
 from routes.analyse import analyse_bp
 from services.security import apply_security_headers
+from services.embeddings import load_model
 
 load_dotenv()
 
@@ -32,6 +33,10 @@ app.register_blueprint(recommend_bp)
 app.register_blueprint(report_bp)
 app.register_blueprint(health_bp)
 app.register_blueprint(analyse_bp)
+
+# Pre-load sentence-transformers model at startup
+with app.app_context():
+    load_model()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)
