@@ -1,9 +1,12 @@
 import json
 import os
+import time
 from datetime import datetime, timezone
 from flask import Blueprint, request, jsonify
 from services.groq_client import call_groq
 from services.sanitiser import sanitise_input
+from services.cache import get_cached, set_cached
+from routes.health import record_response_time
 
 describe_bp = Blueprint("describe", __name__)
 
@@ -27,6 +30,8 @@ def load_prompt() -> str:
 
 @describe_bp.route("/describe", methods=["POST"])
 def describe():
+    start_time = time.time()
+
     data = request.get_json(silent=True)
     if not data:
         return jsonify({"error": "Request body must be valid JSON"}), 400
@@ -37,13 +42,19 @@ def describe():
     if missing:
         return jsonify({"error": f"Missing required fields: {', '.join(missing)}"}), 400
 
-    # Sanitise all string inputs
+    # Sanitise inputs
     for field in ["item_name", "department", "period", "notes"]:
         if data.get(field):
             cleaned, suspicious = sanitise_input(str(data[field]))
             if suspicious:
-                return jsonify({"error": f"Invalid input detected in field: {field}"}), 400
+                return jsonify({"error": f"Invalid input in field: {field}"}), 400
             data[field] = cleaned
+
+    # Check cache first
+    cached = get_cached("describe", data)
+    if cached:
+        cached["from_cache"] = True
+        return jsonify(cached), 200
 
     # Build prompt
     try:
@@ -64,8 +75,15 @@ def describe():
         raw = raw.strip().lstrip("```json").lstrip("```").rstrip("```").strip()
         result = json.loads(raw)
         result["is_fallback"] = False
+        result["from_cache"] = False
+        set_cached("describe", data, result)
     except Exception:
         result = FALLBACK_RESPONSE.copy()
+        result["from_cache"] = False
+
+    # Record response time
+    duration_ms = (time.time() - start_time) * 1000
+    record_response_time(duration_ms)
 
     result["generated_at"] = datetime.now(timezone.utc).isoformat()
     return jsonify(result), 200
