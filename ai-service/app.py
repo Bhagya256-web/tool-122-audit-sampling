@@ -9,10 +9,14 @@ from routes.recommend import recommend_bp
 from routes.report import report_bp
 from routes.health import health_bp
 from routes.analyse import analyse_bp
+from services.security import apply_security_headers
 
 load_dotenv()
 
 app = Flask(__name__)
+
+# Apply security headers to all responses
+apply_security_headers(app)
 
 # Rate limiting: 30 requests per minute per IP
 limiter = Limiter(
